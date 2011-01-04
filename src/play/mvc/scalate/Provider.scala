@@ -107,7 +107,13 @@ trait Provider {
     } catch { case ex:Exception => throw new UnexpectedException(ex)}
     
     try {
-          val baseName = templateName.replaceAll(".html", "."+renderMode)
+          //Scalate requires the files end in the rendering mode
+          val baseName = 
+	    if (templateName.endsWith(".html")) {
+	      templateName.replaceAll(".html", "." + renderMode)
+	    } else {
+	      templateName + "." + renderMode
+	    }
           val templatePath = new File(Play.applicationPath+"/app/views","/"+baseName).toString.replace(new File(Play.applicationPath+"/app/views").toString,"")
           engine.layout(templatePath, context)
     } catch {
